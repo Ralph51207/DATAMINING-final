@@ -1,16 +1,36 @@
-# CCS-230 Final Project (Single Notebook)
+# Heart Disease Data Mining Project
 
-This folder contains a full, self-contained notebook implementation of the heart disease data mining case study.
+This project analyzes **heart disease risk** using the UCI Heart Disease dataset.
 
-## Main File
-- `Lastnames_CCS230_Finals.ipynb`: Complete end-to-end pipeline in one notebook.
+It includes:
+- one main notebook that runs the full data mining pipeline,
+- an API server,
+- and a web dashboard for running the pipeline and visualizing model results.
 
-## Outputs
-- `outputs/`: Generated charts and tables.
-- `Case_Study_Report_Draft.md`: Generated report draft.
-- `Lastnames_CCS230_Finals.pdf`: Generated PDF report.
+## What This Program Does
 
-## Quick Start
+The pipeline performs end-to-end analysis:
+1. Loads and prepares the dataset.
+2. Cleans data and handles missing values.
+3. Creates exploratory analysis outputs (plots/statistics).
+4. Mines association rules for risk patterns.
+5. Builds patient clusters (archetypes).
+6. Trains and compares classification models.
+7. Saves outputs (charts, tables, reports) into `outputs/`.
+
+The evaluation prioritizes **recall**, because missing high-risk patients is costly.
+
+## Important Files
+
+- `Lastnames_CCS230_Finals.ipynb`: full pipeline notebook.
+- `server.py`: FastAPI server that runs the notebook and exposes status/outputs.
+- `ui/`: dashboard frontend.
+- `outputs/`: generated artifacts such as model metrics, charts, and reports.
+- `Case_Study_Report_Draft.md`: generated markdown report.
+- `Lastnames_CCS230_Finals.pdf`: generated PDF report.
+
+## Run the Notebook Only
+
 1. Install dependencies:
    ```powershell
    C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m pip install -r requirements.txt
@@ -18,29 +38,29 @@ This folder contains a full, self-contained notebook implementation of the heart
 2. Open `Lastnames_CCS230_Finals.ipynb`.
 3. Run all cells from top to bottom.
 
-## Interactive UI
-The UI provides an interactive control panel to run the notebook, view progress, and explore outputs.
+## Run the Dashboard UI
 
-Dependencies for the UI server (`fastapi`, `uvicorn`, `nbclient`) are included in `requirements.txt`.
-
-1. Install dependencies (includes FastAPI and Uvicorn):
+1. Install dependencies:
    ```powershell
    C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m pip install -r requirements.txt
    ```
-2. Start the UI server from the project root:
+2. Start the server from project root:
    ```powershell
    C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m uvicorn server:app --reload
    ```
-3. Open the UI in your browser:
-   - http://127.0.0.1:8000
-4. Click **Run Pipeline** to execute the notebook and refresh outputs.
+3. Open:
+   - `http://127.0.0.1:8000`
+4. Click **Run Pipeline**.
 
-### Troubleshooting (Windows PowerShell)
-If your path includes spaces, wrap the Python path in quotes:
+The dashboard will show:
+- pipeline status and progress,
+- a metric graph (Accuracy / Precision / Recall / F1) with top metric buttons,
+- generated artifacts,
+- live run logs.
+
+## Windows PowerShell Tip
+
+If your Python path contains spaces, quote it:
 ```powershell
 & "C:/Users/Ralph/Desktop/DATA MINING final/.venv-1/Scripts/python.exe" -m uvicorn server:app --reload
 ```
-
-## Notes
-- The notebook fetches the dataset, performs full analysis, and exports report files.
-- Model selection prioritizes Recall due to the clinical cost of false negatives.

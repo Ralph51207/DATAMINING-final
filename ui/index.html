@@ -3,111 +3,128 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Heart Disease Data Mining - Interactive UI</title>
+  <title>Heart Disease Analytics Workbench</title>
   <link rel="stylesheet" href="/ui/styles.css" />
 </head>
 <body>
-  <div class="bg-orb orb-a"></div>
-  <div class="bg-orb orb-b"></div>
-  <div class="grain"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Cardio Analytics</h1>
+        <p>Clinical Risk Workbench</p>
+      </div>
+      <nav class="menu">
+        <button class="menu-btn active" data-section="graphSection">Patient Graph</button>
+        <button class="menu-btn" data-section="datasetSection">Dataset</button>
+        <button class="menu-btn" data-section="outputsSection">Notebook Outputs</button>
+        <button class="menu-btn" data-section="logSection">Run Log</button>
+      </nav>
+      <div class="sidebar-actions">
+        <button id="runBtn" class="btn primary">Run Pipeline</button>
+        <a class="btn" href="/reports/Case_Study_Report_Draft.md">Report Draft</a>
+        <a class="btn" href="/reports/Lastnames_CCS230_Finals.pdf">Report PDF</a>
+      </div>
+    </aside>
 
-  <header class="hero">
-    <div class="hero-inner">
-      <p class="eyebrow">CCS-230 Final Project</p>
-      <h1>Heart Disease Data Mining</h1>
-      <p class="subhead">
-        A live, interactive control panel for the pipeline. Run the notebook, watch each
-        step progress, and explore the generated artifacts.
-      </p>
-      <div class="hero-actions">
-        <button id="runBtn" class="btn">Run Pipeline</button>
-        <a class="btn ghost" href="/reports/Case_Study_Report_Draft.md">Open Report Draft</a>
-        <a class="btn ghost" href="/reports/Lastnames_CCS230_Finals.pdf">Open PDF</a>
-      </div>
-      <div id="statusBar" class="status-bar" aria-live="polite">
-        <div class="status-pill" data-status="idle">Idle</div>
-        <div class="status-text">Ready to run.</div>
-      </div>
-      <div class="progress">
-        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
-      </div>
-    </div>
-  </header>
-
-  <main class="content">
-    <section class="card highlight">
-      <div>
-        <h2>At a Glance</h2>
-        <p>
-          The workflow prioritizes clinical safety by maximizing recall, reducing the risk
-          of missed high-risk patients.
-        </p>
-      </div>
-      <div class="stats">
-        <div class="stat">
-          <span class="label">Primary Models</span>
-          <span class="value">Decision Tree, Random Forest</span>
+    <main class="workspace">
+      <header class="topbar">
+        <div id="statusBar" class="status-bar" aria-live="polite">
+          <div class="status-pill" data-status="idle">IDLE</div>
+          <div class="status-text">Ready to run.</div>
         </div>
-        <div class="stat">
-          <span class="label">Key Outputs</span>
-          <span class="value">EDA, Rules, Clusters, Metrics</span>
+        <div class="progress">
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <section class="pipeline">
-      <div class="section-head">
-        <h2>Pipeline Steps</h2>
-      </div>
-      <div id="steps" class="steps"></div>
-    </section>
-
-    <section class="card">
-      <div class="section-head">
-        <h2>Model Metrics</h2>
-        <p class="muted">Live table from the latest run.</p>
-      </div>
-      <div class="table-wrap">
-        <table id="metricsTable">
-          <thead>
-            <tr>
-              <th>Model</th>
-              <th>Accuracy</th>
-              <th>Precision</th>
-              <th>Recall</th>
-              <th>F1</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="gallery">
-      <div class="section-head">
-        <h2>Artifacts</h2>
-        <div class="chips" id="artifactFilters">
-          <button class="chip active" data-filter="all">All</button>
-          <button class="chip" data-filter="chart">Charts</button>
-          <button class="chip" data-filter="table">Tables</button>
-          <button class="chip" data-filter="report">Reports</button>
+      <section id="graphSection" class="panel">
+        <div class="panel-head">
+          <h2>Patient Data Graph</h2>
+          <label class="viz-menu-label">Visualization
+            <select id="vizMenu">
+              <option value="scatter">Scatter Plot</option>
+              <option value="heatmap">Correlation Heatmap</option>
+              <option value="distribution">Target Distribution</option>
+              <option value="metrics">Model Metrics</option>
+              <option value="notebook">Notebook Visuals (Decision Tree / Cluster / More)</option>
+            </select>
+          </label>
         </div>
-      </div>
-      <div id="artifactGrid" class="grid"></div>
-    </section>
+        <div class="panel-head">
+          <div class="plot-controls">
+            <label>X
+              <select id="xSelect"></select>
+            </label>
+            <label>Y
+              <select id="ySelect"></select>
+            </label>
+            <label>Color By
+              <select id="colorSelect">
+                <option value="HeartDisease">HeartDisease</option>
+                <option value="Sex">Sex</option>
+              </select>
+            </label>
+            <label id="metricLabel">Metric
+              <select id="metricSelect">
+                <option value="accuracy">accuracy</option>
+                <option value="precision">precision</option>
+                <option value="recall">recall</option>
+                <option value="f1">f1</option>
+              </select>
+            </label>
+            <label id="imageLabel">Output Chart
+              <select id="imageSelect"></select>
+            </label>
+          </div>
+        </div>
+        <div class="plot-wrap">
+          <canvas id="scatterPlot" width="1200" height="440"></canvas>
+          <img id="plotImage" class="preview-img" alt="Notebook chart preview" />
+          <div id="plotFallback" class="muted">Dataset columns needed for plotting were not found.</div>
+        </div>
+        <div id="plotLegend" class="plot-legend"></div>
+        <div id="plotSummary" class="summary"></div>
+        <div id="steps" class="steps"></div>
+      </section>
 
-    <section class="card log-card">
-      <div class="section-head">
+      <section id="datasetSection" class="panel">
+        <div class="panel-head">
+          <h2>Dataset Table</h2>
+          <div id="datasetMeta" class="meta"></div>
+        </div>
+        <div class="table-wrap">
+          <table id="datasetTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="outputsSection" class="panel">
+        <div class="panel-head">
+          <h2>Notebook Outputs</h2>
+          <div class="chips" id="artifactFilters">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="chart">Charts</button>
+            <button class="chip" data-filter="table">Tables</button>
+            <button class="chip" data-filter="report">Reports</button>
+          </div>
+        </div>
+        <div class="outputs-layout">
+          <div id="artifactGrid" class="artifact-list"></div>
+          <div class="preview-pane">
+            <h3 id="previewTitle">Preview</h3>
+            <div id="previewContent" class="preview-content">Select an output file.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="logSection" class="panel">
         <h2>Run Log</h2>
-        <p class="muted">Live updates from the backend.</p>
-      </div>
-      <div id="logOutput" class="log-output">Waiting for a run...</div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>Built for a clear, interactive walkthrough of the analysis pipeline.</p>
-  </footer>
+        <pre id="logOutput" class="log-output">Waiting for a run...</pre>
+      </section>
+    </main>
+  </div>
 
   <script src="/ui/app.js"></script>
 </body>

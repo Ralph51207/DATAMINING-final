@@ -17,6 +17,7 @@ from nbclient import NotebookClient
 PROJECT_DIR = Path(__file__).resolve().parent
 NOTEBOOK_PATH = PROJECT_DIR / "Lastnames_CCS230_Finals.ipynb"
 OUTPUT_DIR = PROJECT_DIR / "outputs"
+DATASET_PATH = PROJECT_DIR / "heart.csv"
 EXECUTED_NOTEBOOK = OUTPUT_DIR / "Lastnames_CCS230_Finals.executed.ipynb"
 
 REPORT_FILES = {
@@ -71,6 +72,44 @@ def api_status() -> dict[str, Any]:
     status["metrics"] = read_metrics()
     status["artifacts"] = list_artifacts()
     return status
+
+
+@app.get("/api/dataset")
+def api_dataset(limit: int = 30) -> dict[str, Any]:
+    if not DATASET_PATH.exists():
+        raise HTTPException(status_code=404, detail="Dataset not found")
+
+    rows: list[dict[str, str]] = []
+    with DATASET_PATH.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        headers = reader.fieldnames or []
+        for idx, row in enumerate(reader):
+            if idx >= max(limit, 1):
+                break
+            rows.append(row)
+
+    return {
+        "name": DATASET_PATH.name,
+        "columns": headers,
+        "row_count": count_dataset_rows(),
+        "sample_size": len(rows),
+        "sample_rows": rows,
+    }
+
+
+@app.get("/api/output/{filename}")
+def api_output(filename: str) -> Any:
+    safe_name = Path(filename).name
+    file_path = OUTPUT_DIR / safe_name
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Output file not found")
+
+    ext = file_path.suffix.lower()
+    if ext in {".csv", ".txt", ".md"}:
+        return PlainTextResponse(file_path.read_text(encoding="utf-8", errors="replace"))
+    if ext == ".ipynb":
+        return PlainTextResponse(file_path.read_text(encoding="utf-8", errors="replace"))
+    raise HTTPException(status_code=400, detail="Preview not supported for this file type")
 
 
 @app.post("/api/run")
@@ -224,3 +263,15 @@ def list_artifacts() -> list[dict[str, str]]:
             )
 
     return artifacts
+
+
+def count_dataset_rows() -> int:
+    if not DATASET_PATH.exists():
+        return 0
+    with DATASET_PATH.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.reader(handle)
+        try:
+            next(reader)
+        except StopIteration:
+            return 0
+        return sum(1 for _ in reader)
