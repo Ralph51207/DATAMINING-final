@@ -1,0 +1,13 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+mlxtend
+ucimlrepo
+nbformat
+jupyter
+reportlab
+fastapi
+uvicorn
+nbclient
