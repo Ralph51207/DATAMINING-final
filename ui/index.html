@@ -21,7 +21,6 @@
       </nav>
       <div class="sidebar-actions">
         <button id="runBtn" class="btn primary">Run Pipeline</button>
-        <a class="btn" href="/reports/Case_Study_Report_Draft.md">Report Draft</a>
         <a class="btn" href="/reports/Lastnames_CCS230_Finals.pdf">Report PDF</a>
       </div>
     </aside>
@@ -42,48 +41,41 @@
           <h2>Patient Data Graph</h2>
           <label class="viz-menu-label">Visualization
             <select id="vizMenu">
+              <option value="auto">Auto (Recommended)</option>
               <option value="scatter">Scatter Plot</option>
+              <option value="bar">Bar Chart</option>
+              <option value="box">Box Plot</option>
+              <option value="histogram">Histogram</option>
               <option value="heatmap">Correlation Heatmap</option>
-              <option value="distribution">Target Distribution</option>
-              <option value="metrics">Model Metrics</option>
-              <option value="notebook">Notebook Visuals (Decision Tree / Cluster / More)</option>
             </select>
           </label>
         </div>
         <div class="panel-head">
           <div class="plot-controls">
-            <label>X
+            <label>X-axis
               <select id="xSelect"></select>
             </label>
-            <label>Y
+            <label>Y-axis
               <select id="ySelect"></select>
             </label>
             <label>Color By
-              <select id="colorSelect">
-                <option value="HeartDisease">HeartDisease</option>
-                <option value="Sex">Sex</option>
-              </select>
+              <select id="colorSelect"></select>
             </label>
-            <label id="metricLabel">Metric
-              <select id="metricSelect">
-                <option value="accuracy">accuracy</option>
-                <option value="precision">precision</option>
-                <option value="recall">recall</option>
-                <option value="f1">f1</option>
+            <label>Aggregation
+              <select id="aggSelect">
+                <option value="rate">Disease Rate</option>
+                <option value="count">Count</option>
               </select>
-            </label>
-            <label id="imageLabel">Output Chart
-              <select id="imageSelect"></select>
             </label>
           </div>
         </div>
         <div class="plot-wrap">
-          <canvas id="scatterPlot" width="1200" height="440"></canvas>
-          <img id="plotImage" class="preview-img" alt="Notebook chart preview" />
+          <div id="chartContainer" class="plotly-host"></div>
           <div id="plotFallback" class="muted">Dataset columns needed for plotting were not found.</div>
         </div>
+        <div id="validationMessage" class="validation-message"></div>
+        <div id="chartDescription" class="summary"></div>
         <div id="plotLegend" class="plot-legend"></div>
-        <div id="plotSummary" class="summary"></div>
         <div id="steps" class="steps"></div>
       </section>
 
@@ -126,6 +118,7 @@
     </main>
   </div>
 
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="/ui/app.js"></script>
 </body>
 </html>

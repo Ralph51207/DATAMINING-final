@@ -1,66 +1,62 @@
-# Heart Disease Data Mining Project
+# Heart Disease Analytics Workbench
 
-This project analyzes **heart disease risk** using the UCI Heart Disease dataset.
+This project is a heart disease data mining app built from:
+- a full analysis notebook (`Lastnames_CCS230_Finals.ipynb`)
+- a FastAPI backend (`server.py`)
+- an interactive analytics UI (`ui/`)
 
-It includes:
-- one main notebook that runs the full data mining pipeline,
-- an API server,
-- and a web dashboard for running the pipeline and visualizing model results.
+The app uses the UCI heart dataset and lets you:
+- run the notebook pipeline from the UI
+- explore patient data visually (scatter, heatmap, distribution, model metrics, notebook visuals)
+- inspect dataset rows, outputs, reports, and logs
 
-## What This Program Does
+## Project Structure
 
-The pipeline performs end-to-end analysis:
-1. Loads and prepares the dataset.
-2. Cleans data and handles missing values.
-3. Creates exploratory analysis outputs (plots/statistics).
-4. Mines association rules for risk patterns.
-5. Builds patient clusters (archetypes).
-6. Trains and compares classification models.
-7. Saves outputs (charts, tables, reports) into `outputs/`.
+- `heart.csv` - local dataset file
+- `Lastnames_CCS230_Finals.ipynb` - end-to-end pipeline notebook
+- `server.py` - API + notebook runner
+- `ui/` - frontend files
+- `outputs/` - generated charts/tables/reports after pipeline run
+- `Case_Study_Report_Draft.md` - report draft
+- `Lastnames_CCS230_Finals.pdf` - report PDF
 
-The evaluation prioritizes **recall**, because missing high-risk patients is costly.
+## Quick Start (Recommended)
 
-## Important Files
+Run these commands from the project folder:
 
-- `Lastnames_CCS230_Finals.ipynb`: full pipeline notebook.
-- `server.py`: FastAPI server that runs the notebook and exposes status/outputs.
-- `ui/`: dashboard frontend.
-- `outputs/`: generated artifacts such as model metrics, charts, and reports.
-- `Case_Study_Report_Draft.md`: generated markdown report.
-- `Lastnames_CCS230_Finals.pdf`: generated PDF report.
-
-## Run the Notebook Only
-
-1. Install dependencies:
-   ```powershell
-   C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m pip install -r requirements.txt
-   ```
-2. Open `Lastnames_CCS230_Finals.ipynb`.
-3. Run all cells from top to bottom.
-
-## Run the Dashboard UI
-
-1. Install dependencies:
-   ```powershell
-   C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m pip install -r requirements.txt
-   ```
-2. Start the server from project root:
-   ```powershell
-   C:/Users/Ralph/AppData/Local/Programs/Python/Python310/python.exe -m uvicorn server:app --reload
-   ```
-3. Open:
-   - `http://127.0.0.1:8000`
-4. Click **Run Pipeline**.
-
-The dashboard will show:
-- pipeline status and progress,
-- a metric graph (Accuracy / Precision / Recall / F1) with top metric buttons,
-- generated artifacts,
-- live run logs.
-
-## Windows PowerShell Tip
-
-If your Python path contains spaces, quote it:
 ```powershell
-& "C:/Users/Ralph/Desktop/DATA MINING final/.venv-1/Scripts/python.exe" -m uvicorn server:app --reload
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m uvicorn server:app --reload
 ```
+
+Then open:
+
+`http://127.0.0.1:8000`
+
+## How To Use
+
+1. Open the app in your browser.
+2. Click `Run Pipeline`.
+3. Wait until status shows complete.
+4. Explore:
+- `Patient Data Graph` (different visualization modes from the top-right menu)
+- `Dataset Table`
+- `Notebook Outputs`
+- `Run Log`
+
+## If You See an Old UI
+
+1. Make sure only one server is running.
+2. Open exactly `http://127.0.0.1:8000`
+3. Hard refresh with `Ctrl + F5`
+4. Do not open `ui/index.html` with `file://`
+
+## Optional: Run Notebook Manually
+
+If you only want notebook execution:
+
+1. Activate `.venv`
+2. Open `Lastnames_CCS230_Finals.ipynb`
+3. Run all cells from top to bottom
